@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright 2017, Georg Ehrke <oc.list@georgehrke.com>
+ * @copyright 2020, Thomas Citharel <nextcloud@tcit.fr>
  *
- * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Thomas Citharel <nextcloud@tcit.fr>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -21,40 +21,22 @@
  *
  */
 
-namespace OCP\Calendar;
+namespace OC\Calendar;
 
-/**
- * This class provides access to the Nextcloud CalDAV backend.
- * Use this class exclusively if you want to access calendars.
- *
- * Events/Journals/Todos in general will be expressed as an array of key-value-pairs.
- * The keys will match the property names defined in https://tools.ietf.org/html/rfc5545
- *
- * [
- *   'id' => 123,
- *   'type' => 'VEVENT',
- *   'calendar-key' => 42,
- *   'objects' => [
- *     [
- *       'SUMMARY' => ['FooBar', []],
- *       'DTSTART' => ['20171001T123456', ['TZID' => 'EUROPE/BERLIN']],
- *       'DURATION' => ['P1D', []],
- * 	     'ATTENDEE' => [
- *         ['mailto:bla@blub.com', ['CN' => 'Mr. Bla Blub']]
- *       ],
- *       'VALARM' => [
- * 	       [
- *           'TRIGGER' => ['19980101T050000Z', ['VALUE' => DATE-TIME]]
- *         ]
- *       ]
- *     ],
- *   ]
- * ]
- *
- * @since 13.0.0
- * @deprecated 20.0.0
- */
-interface IManager {
+use OCP\Calendar\ICalendarV2;
+use OCP\Calendar\IManagerV2;
+
+class ManagerV2 implements IManagerV2 {
+
+	/**
+	 * @var ICalendarV2[] holds all registered calendars
+	 */
+	private $calendars=[];
+
+	/**
+	 * @var \Closure[] to call to load/register calendar providers
+	 */
+	private $calendarLoaders=[];
 
 	/**
 	 * This function is used to search and find objects within the user's calendars.
@@ -69,7 +51,19 @@ interface IManager {
 	 * @return array an array of events/journals/todos which are arrays of arrays of key-value-pairs
 	 * @since 13.0.0
 	 */
-	public function search($pattern, array $searchProperties = [], array $options = [], $limit = null, $offset = null);
+	public function search($pattern, array $searchProperties=[], array $options=[], int $limit = null, int $offset=null): array {
+		$this->loadCalendars();
+		$result = [];
+		foreach($this->calendars as $calendar) {
+			$r = $calendar->search($pattern, $searchProperties, $options, $limit, $offset);
+			foreach($r as $o) {
+				$o['calendar-key'] = $calendar->getKey();
+				$result[] = $o;
+			}
+		}
+
+		return $result;
+	}
 
 	/**
 	 * Check if calendars are available
@@ -77,25 +71,31 @@ interface IManager {
 	 * @return bool true if enabled, false if not
 	 * @since 13.0.0
 	 */
-	public function isEnabled();
+	public function isEnabled(): bool {
+		return !empty($this->calendars) || !empty($this->calendarLoaders);
+	}
 
 	/**
 	 * Registers a calendar
 	 *
-	 * @param ICalendar $calendar
+	 * @param ICalendarV2 $calendar
 	 * @return void
 	 * @since 13.0.0
 	 */
-	public function registerCalendar(ICalendar $calendar);
+	public function registerCalendar(ICalendarV2 $calendar): void {
+		$this->calendars[$calendar->getKey()] = $calendar;
+	}
 
 	/**
 	 * Unregisters a calendar
 	 *
-	 * @param ICalendar $calendar
+	 * @param ICalendarV2 $calendar
 	 * @return void
 	 * @since 13.0.0
 	 */
-	public function unregisterCalendar(ICalendar $calendar);
+	public function unregisterCalendar(ICalendarV2 $calendar): void {
+		unset($this->calendars[$calendar->getKey()]);
+	}
 
 	/**
 	 * In order to improve lazy loading a closure can be registered which will be called in case
@@ -105,18 +105,47 @@ interface IManager {
 	 * @return void
 	 * @since 13.0.0
 	 */
-	public function register(\Closure $callable);
+	public function register(\Closure $callable): void {
+		$this->calendarLoaders[] = $callable;
+	}
 
 	/**
-	 * @return ICalendar[]
+	 * @return ICalendarV2[]
 	 * @since 13.0.0
 	 */
-	public function getCalendars();
+	public function getCalendars(): array {
+		$this->loadCalendars();
+
+		return array_values($this->calendars);
+	}
 
 	/**
 	 * removes all registered calendar instances
 	 * @return void
 	 * @since 13.0.0
 	 */
-	public function clear();
+	public function clear(): void {
+		$this->calendars = [];
+		$this->calendarLoaders = [];
+	}
+
+	/**
+	 * loads all calendars
+	 */
+	private function loadCalendars() {
+		foreach($this->calendarLoaders as $callable) {
+			$callable($this);
+		}
+		$this->calendarLoaders = [];
+	}
+
+	/**
+	 * Get a calendar by it's key
+	 *
+	 * @param string $key
+	 * @return ICalendarV2|null
+	 */
+	public function getCalendar(string $key): ?ICalendarV2 {
+		return isset($this->calendars[$key]) ? $this->calendars[$key] : null;
+	}
 }

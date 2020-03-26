@@ -25,8 +25,9 @@
 namespace OC\Calendar;
 
 use OCP\Calendar\ICalendar;
+use OCP\Calendar\IManager;
 
-class Manager implements \OCP\Calendar\IManager {
+class Manager implements IManager {
 
 	/**
 	 * @var ICalendar[] holds all registered calendars
