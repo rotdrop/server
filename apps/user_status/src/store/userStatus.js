@@ -27,6 +27,7 @@ import {
 	clearMessage,
 } from '../services/statusService'
 import { loadState } from '@nextcloud/initial-state'
+import { getCurrentUser } from '@nextcloud/auth'
 import { getTimestampForClearAt } from '../services/clearAtService'
 import { emit } from '@nextcloud/event-bus'
 
@@ -159,6 +160,7 @@ const actions = {
 			message: state.message,
 			icon: state.icon,
 			clearAt: state.clearAt,
+			userId: getCurrentUser()?.uid,
 		})
 	},
 
@@ -187,6 +189,7 @@ const actions = {
 			message: state.message,
 			icon: state.icon,
 			clearAt: state.clearAt,
+			userId: getCurrentUser()?.uid,
 		})
 	},
 
@@ -212,6 +215,7 @@ const actions = {
 			message: state.message,
 			icon: state.icon,
 			clearAt: state.clearAt,
+			userId: getCurrentUser()?.uid,
 		})
 	},
 
@@ -231,6 +235,7 @@ const actions = {
 			message: state.message,
 			icon: state.icon,
 			clearAt: state.clearAt,
+			userId: getCurrentUser()?.uid,
 		})
 	},
 
