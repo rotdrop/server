@@ -158,3 +158,17 @@ tests/acceptance/vendor/
 
 # Ignore stuff which is built
 core/js
+apps/accessibility/js/
+apps/comments/js/
+apps/files/js/dist/
+apps/files_sharing/js/dist/
+apps/files_trashbin/js/
+apps/files_versions/js/
+apps/oauth2/js/
+apps/settings/js/vue-*
+apps/systemtags/js/systemtags.*
+apps/twofactor_backupcodes/js
+apps/updatenotification/js/updatenotification.*
+apps/workflowengine/js/
+core/js/dist
+node_modules
