@@ -4,3 +4,6 @@
 [submodule "apps/bav"]
 	path = apps/bav
 	url = git@gitlab.claus-justus-heine.de:nextcloud/apps/bav.git
+[submodule "apps/logreader"]
+	path = apps/logreader
+	url = https://github.com/nextcloud/logreader.git
