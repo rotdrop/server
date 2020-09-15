@@ -155,3 +155,6 @@ clover.xml
 # Tests - dependencies
 tests/acceptance/composer.lock
 tests/acceptance/vendor/
+
+# Ignore stuff which is built
+core/js
