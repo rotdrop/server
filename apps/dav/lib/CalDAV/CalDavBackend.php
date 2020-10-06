@@ -1606,12 +1606,14 @@ class CalDavBackend extends AbstractBackend implements SyncSupport, Subscription
 				$outerQuery->createNamedParameter(self::CLASSIFICATION_PUBLIC)));
 		}
 
-		$or = $innerQuery->expr()->orX();
-		foreach ($searchProperties as $searchProperty) {
-			$or->add($innerQuery->expr()->eq('op.name',
-				$outerQuery->createNamedParameter($searchProperty)));
-		}
-		$innerQuery->andWhere($or);
+        if (!empty($searchProperties)) {
+            $or = $innerQuery->expr()->orX();
+            foreach ($searchProperties as $searchProperty) {
+                $or->add($innerQuery->expr()->eq('op.name',
+				    $outerQuery->createNamedParameter($searchProperty)));
+            }
+            $innerQuery->andWhere($or);
+        }
 
 		if ($pattern !== '') {
 			$innerQuery->andWhere($innerQuery->expr()->iLike('op.value',
