@@ -29,7 +29,6 @@ namespace OCA\DAV\Tests\unit\CalDAV;
 use OCA\DAV\CalDAV\CalDavBackend;
 use OCA\DAV\CalDAV\Calendar;
 use OCA\DAV\CalDAV\CalendarImpl;
-use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
 class CalendarImplTest extends TestCase {

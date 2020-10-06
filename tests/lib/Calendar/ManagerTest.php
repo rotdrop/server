@@ -26,7 +26,6 @@ namespace Test\Calendar;
 
 use OC\Calendar\Manager;
 use OCP\Calendar\ICalendar;
-use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
 class ManagerTest extends TestCase {
