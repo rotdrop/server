@@ -81,7 +81,7 @@ class L10NString implements \JsonSerializable {
                   $locale = $this->l10n->getLocaleCode();
                   $event = new Events\TranslationNotFound($text, $language, $locale, $app);
                   \OC::$server->query(IEventDispatcher::class)->dispatchTyped($event);
-                  \OCP\Util::writeLog($app, "Translation for ``".$text."'' not found.", ILogger::INFO);
+                  //\OCP\Util::writeLog($app, "Translation for ``".$text."'' not found.", ILogger::INFO);
                 }
 
 		// Replace %n first (won't interfere with vsprintf)
