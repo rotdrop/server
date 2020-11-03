@@ -31,6 +31,9 @@
 
 namespace OC\L10N;
 
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\ILogger;
+
 class L10NString implements \JsonSerializable {
 	/** @var \OC\L10N\L10N */
 	protected $l10n;
@@ -72,7 +75,14 @@ class L10NString implements \JsonSerializable {
 			} else {
 				$text = $translations[$this->text];
 			}
-		}
+		} else {
+                  $app = $this->l10n->getAppName();
+                  $language = $this->l10n->getLanguageCode();
+                  $locale = $this->l10n->getLocaleCode();
+                  $event = new Events\TranslationNotFound($text, $language, $locale, $app);
+                  \OC::$server->query(IEventDispatcher::class)->dispatchTyped($event);
+                  //\OCP\Util::writeLog($app, "Translation for ``".$text."'' not found.", ILogger::INFO);
+                }
 
 		// Replace %n first (won't interfere with vsprintf)
 		$text = str_replace('%n', (string)$this->count, $text);
