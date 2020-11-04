@@ -45,7 +45,7 @@ class TranslationNotFound extends Event {
 	/** @var array */
 	private $callerFrame;
 
-	public function __construct(string $phrase, string $language, string $locale = null, string $app = null, int $frame = 5) {
+	public function __construct(string $phrase, string $language, string $locale = null, string $app = null, int $frame = 4) {
 		parent::__construct();
 
 		$this->phrase = $phrase;
