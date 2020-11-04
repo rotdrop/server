@@ -49,7 +49,7 @@ class TranslationNotFound extends Event {
 		parent::__construct();
 
 		$this->phrase = $phrase;
-		$this->lanuage = $language;
+		$this->language = $language;
 		$this->locale = $locale;
 		$this->app = $app;
 
@@ -66,12 +66,30 @@ class TranslationNotFound extends Event {
 		return $this->language;
 	}
 	
+	public function getLocale(): string {
+		return $this->locale;
+	}
+	
 	public function getAppName(): string {
 		return $this->app;
 	}
 
 	public function getCallerFrame(): array {
 		return $this->callerFrame;
+	}
+
+	public function getFile(): string {
+		if (!empty($this->callerFrame['file'])) {
+			return $this->callerFrame['file'];
+		}
+		return '';
+	}
+
+	public function getLine(): int {
+		if (!empty($this->callerFrame['line'])) {
+			return $this->callerFrame['line'];
+		}
+		return -1;
 	}
 }
 
