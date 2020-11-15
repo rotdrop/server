@@ -87,6 +87,9 @@ class ErrorHandler {
 		if (error_reporting() === 0) {
 			return;
 		}
+		if (!(error_reporting() & $number)) {
+		  return;
+		}
 		$msg = $message . ' at ' . $file . '#' . $line;
 		$e = new \Error(self::removePassword($msg));
 		self::$logger->logException($e, ['app' => 'PHP', 'level' => self::errnoToLogLevel($number)]);
