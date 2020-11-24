@@ -29,4 +29,5 @@ $CONFIG_LOCAL = [
    * Defaults to ``2``
    */
   'loglevel' => 1,
+  'logfilemode' => 0660,
 ];
