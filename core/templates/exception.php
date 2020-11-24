@@ -27,5 +27,20 @@ style('core', ['styles', 'header']);
 		<br />
 		<h3><?php p($l->t('Trace')) ?></h3>
 		<pre><?php p($_['trace']) ?></pre>
+		<?php if (isset($_['previous'])): ?>
+			<?php foreach ($_['previous'] as $e) { ?>
+				<h3><?php p($l->t('Caused by exception')) ?></h3>
+				<ul>
+					<li><?php p($l->t('Type: %s', [$e['errorClass']])) ?></li>
+					<li><?php p($l->t('Code: %s', [$e['errorCode']])) ?></li>
+					<li><?php p($l->t('Message: %s', [$e['errorMsg']])) ?></li>
+					<li><?php p($l->t('File: %s', [$e['file']])) ?></li>
+					<li><?php p($l->t('Line: %s', [$e['line']])) ?></li>
+				</ul>
+				<br />
+				<h3><?php p($l->t('Trace')) ?></h3>
+				<pre><?php p($e['trace']) ?></pre>
+			<?php } ?>
+		<?php endif; ?>
 	<?php endif; ?>
 </div>

@@ -329,6 +329,18 @@ class OC_Template extends \OC\Template\Base {
 			$content->assign('debugMode', \OC::$server->getSystemConfig()->getValue('debug', false));
 			$content->assign('remoteAddr', $request->getRemoteAddress());
 			$content->assign('requestID', $request->getId());
+                        $previous = [];
+                        while (($exception = $exception->getPrevious())) {
+                          $previous[] = [
+                            'errorClass' => get_class($exception),
+                            'errorMsg' => $exception->getMessage(),
+                            'errorCode' => $exception->getCode(),
+                            'file' => $exception->getFile(),
+                            'line' => $exception->getLine(),
+                            'trace' => $exception->getTraceAsString(), 
+                          ];
+                        }
+                        $content->assign('previous', $previous);
 			$content->printPage();
 		} catch (\Exception $e) {
 			try {
