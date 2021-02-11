@@ -171,7 +171,6 @@ $.widget('oc.ocdialog', {
 				this.$dialog.prepend($closeButton)
 				this.$dialog.addClass('oc-dialog-has-close')
 				$closeButton.on('click', function() {
-					self.options.closeCallback && self.options.closeCallback()
 					self.close()
 				})
 			} else {
@@ -185,7 +184,7 @@ $.widget('oc.ocdialog', {
 			this.$dialog.css('height', value)
 			break
 		case 'close':
-			this.closeCB = value
+			this.options.closeCallback = value
 			break
 		}
 		// this._super(key, value);
@@ -250,6 +249,8 @@ $.widget('oc.ocdialog', {
 		this.enterCallback = null
 	},
 	close() {
+		console.info('CLOSE', this.options.closeCallback)
+		this.options.closeCallback && this.options.closeCallback()
 		this._destroyOverlay()
 		const self = this
 		// Ugly hack to catch remaining keyup events.
