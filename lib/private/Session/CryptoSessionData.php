@@ -103,6 +103,9 @@ class CryptoSessionData implements \ArrayAccess, ISession {
 	 * @param mixed $value
 	 */
 	public function set(string $key, $value) {
+        if ($this->session->isClosed()) {
+			throw new SessionNotAvailableException('Session has been closed - no further changes to the session are allowed');
+        }
 		$this->sessionValues[$key] = $value;
 		$this->isModified = true;
 	}
@@ -188,6 +191,13 @@ class CryptoSessionData implements \ArrayAccess, ISession {
 		}
 		$this->session->close();
 	}
+
+    /**
+     * Return true if the session is not open
+     */
+    public function isClosed():bool {
+        return $this->session->isClosed();
+    }
 
 	/**
 	 * @param mixed $offset
