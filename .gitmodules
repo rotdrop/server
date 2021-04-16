@@ -4,3 +4,6 @@
 [submodule "bug-fixes/nextcloud-vue"]
 	path = bug-fixes/nextcloud-vue
 	url = git@github.com:rotdrop/nextcloud-vue.git
+[submodule "bug-fixes/nextcloud-files"]
+	path = bug-fixes/nextcloud-files
+	url = git@github.com:rotdrop/nextcloud-files.git
